@@ -8,12 +8,22 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/proto"
+	"log"
+	"os"
 	"sqsExample/person"
 	"sync"
 )
 
 const sqsQueue = "http://sqs.eu-west-2.localhost.localstack.cloud:4566/000000000000/input"
 const endpoint = "http://localhost:4566"
+
+func init() {
+	f, err := os.Create("errors.log")
+	if err != nil {
+		panic(err)
+	}
+	log.SetOutput(f)
+}
 
 func main() {
 
@@ -27,17 +37,17 @@ func main() {
 	for i := 1; i < 100; i++ {
 		wg.Add(1)
 		go func() {
-			uuid := uuid.New()
+			uid := uuid.New()
 
 			user := person.Person{
-				Userid: uuid.String(),
+				Userid: uid.String(),
 				Name:   "Billy Bob",
 				Age:    int32(i),
 			}
 
 			userEncoded, err := proto.Marshal(&user)
 			if err != nil {
-				panic(err)
+				log.Fatalln(err)
 			}
 
 			base64Encoded := base64.StdEncoding.EncodeToString(userEncoded)
@@ -48,7 +58,7 @@ func main() {
 				QueueUrl:    aws.String(sqsQueue),
 			})
 			if err != nil {
-				panic(err)
+				log.Fatalln(err)
 			}
 
 			wg.Done()

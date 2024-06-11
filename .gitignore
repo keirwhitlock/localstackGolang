@@ -5,3 +5,4 @@ person
 terraform.tfstate*
 localstack_providers_override.tf
 .terraform.tfstate.lock.info
+/errors.log

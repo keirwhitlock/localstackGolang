@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"google.golang.org/protobuf/proto"
 	"log"
+	"os"
 	"sqsExample/person"
 	"sync"
 	"time"
@@ -15,6 +16,14 @@ import (
 
 const sqsQueue = "http://sqs.eu-west-2.localhost.localstack.cloud:4566/000000000000/input"
 const endpoint = "http://localhost:4566"
+
+func init() {
+	f, err := os.Create("errors.log")
+	if err != nil {
+		panic(err)
+	}
+	log.SetOutput(f)
+}
 
 func main() {
 	var wg sync.WaitGroup
@@ -36,7 +45,7 @@ func main() {
 				WaitTimeSeconds: aws.Int64(60),
 			})
 			if err != nil {
-				panic(err)
+				log.Fatalln(err)
 			}
 			if len(msg.Messages) == 0 {
 				fmt.Println("Received no messages")
@@ -50,7 +59,7 @@ func main() {
 
 					base64Decoded, err := base64.StdEncoding.DecodeString(*v.Body)
 					if err != nil {
-						panic(err)
+						log.Fatalln(err)
 					}
 
 					err = proto.Unmarshal(base64Decoded, &user)
@@ -73,7 +82,7 @@ func main() {
 				ReceiptHandle: aws.String(v),
 			})
 			if err != nil {
-				panic(err)
+				log.Fatalln(err)
 			}
 			wg.Done()
 		}()
