@@ -26,5 +26,8 @@ awslocal sqs get-queue-attributes --queue-url "http://sqs.eu-west-2.localhost.lo
 ```shell
 brew install protobuf
 protoc --go_out=. *.proto
+
+# if you cant use `go_package` var in proto file, you can pass it into the protoc cmd
+# protoc --go_out=. --go_opt=Mperson.proto=person/ person.proto 
 ```
 
