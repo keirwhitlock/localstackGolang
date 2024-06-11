@@ -3,3 +3,5 @@ person
 .idea
 .terraform.lock.hcl
 terraform.tfstate*
+localstack_providers_override.tf
+.terraform.tfstate.lock.info

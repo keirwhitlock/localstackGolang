@@ -14,9 +14,11 @@ pip3 install terraform-local
 
 ```shell
 localstack start -d
+```
 
+```shell
 tflocal init
-tflocal apply
+tflocal apply -auto-approve 
 ```
 
 ```shell
